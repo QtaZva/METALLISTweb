@@ -9,6 +9,7 @@ namespace METALLIST
         public DbSet<Order> Orders { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Настройка связи "Один ко многим" между Order и Customer
