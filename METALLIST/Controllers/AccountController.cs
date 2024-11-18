@@ -32,7 +32,7 @@ namespace METALLIST.Controllers
             {
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, user.Login), // Используем имя пользователя из базы
+                    new Claim(ClaimTypes.Name, user.Name), // Используем имя пользователя из базы
                     new Claim(ClaimTypes.Role, "Admin") // Пример роли
                 };
 
