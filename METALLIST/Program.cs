@@ -14,7 +14,7 @@ namespace METALLIST
                 options.LoginPath = "/Account/Login"; // Путь к странице входа
                 options.AccessDeniedPath = "/Account/AccessDenied"; // Путь к странице отказа в доступе
                                                                     
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(1); // Время жизни куки: 30 минут
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Время жизни куки: 30 минут
 
                 options.SlidingExpiration = true; // Включить продление куки
             });
