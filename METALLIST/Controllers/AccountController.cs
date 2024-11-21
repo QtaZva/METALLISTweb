@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using METALLIST.Models;
 
 namespace METALLIST.Controllers
 {
@@ -33,7 +32,7 @@ namespace METALLIST.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.Name), // Используем имя пользователя из базы
-                    new Claim(ClaimTypes.Role, "Admin") // Пример роли
+                    /*new Claim(ClaimTypes.Role, "Admin") // Пример роли*/
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

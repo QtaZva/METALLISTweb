@@ -1,0 +1,152 @@
+﻿@model IEnumerable<METALLIST.Models.Customer>
+
+@{
+    ViewData["Title"] = "Список клиентов";
+}
+
+<div class="container mt-4">
+    <h2>Список клиентов</h2>
+
+    <!-- Кнопка для отображения формы -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+        Добавить клиента
+    </button>
+    <!-- Таблица клиентов -->
+    <div id="customer-list">
+        @Html.Partial("_CustomerListPartial", Model)
+    </div>
+    @if (!Model.Any())
+    {
+        <p>Клиентов нет.</p>
+    }
+    
+    
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCustomerModalLabel">Добавить клиента</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма добавления нового клиента -->
+                <form id="add-customer-form">
+                    <input type="hidden" id="CustomerId" name="Id" />
+                    <div class="mb-3">
+                        <label for="FullName" class="form-label">Полное имя</label>
+                        <input type="text" id="FullName" name="FullName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="PhoneNumber" class="form-label">Телефон</label>
+                        <input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Requisites" class="form-label">Реквизиты</label>
+                        <input type="text" id="Requisites" name="Requisites" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="OrganizationName" class="form-label">Название организации</label>
+                        <input type="text" id="OrganizationName" name="OrganizationName" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            let isEditMode = false; // Флаг для определения режима модального окна
+
+            // Обработка кнопки "Добавить клиента"
+            $("#add-customer-btn").click(function () {
+                isEditMode = false; // Сбрасываем режим редактирования
+                $("#addCustomerModalLabel").text("Добавить клиента");
+                $("#add-customer-form")[0].reset(); // Очищаем форму
+                $("#CustomerId").val(""); // Сбрасываем ID клиента
+            });
+
+            // Обработка кнопки "Редактировать клиента"
+            $(document).on("click", ".edit-customer-btn", function () {
+                isEditMode = true; // Устанавливаем режим редактирования
+                const customerId = $(this).data("id");
+
+                // Загружаем данные клиента
+                $.ajax({
+                    url: '@Url.Action("GetCustomer", "Customer")',
+                    method: "GET",
+                    data: { id: customerId },
+                    success: function (customer) {
+                        $("#addCustomerModalLabel").text("Редактировать клиента");
+                        $("#FullName").val(customer.FullName);
+                        $("#PhoneNumber").val(customer.PhoneNumber);
+                        $("#Requisites").val(customer.Requisites);
+                        $("#OrganizationName").val(customer.OrganizationName);
+                        $("#CustomerId").val(customer.Id); // Устанавливаем ID клиента
+                    },
+                    error: function () {
+                        alert("Не удалось загрузить данные клиента.");
+                    }
+                });
+            });
+
+            // Обработка отправки формы
+            $("#add-customer-form").submit(function (e) {
+                e.preventDefault(); // Отменяем стандартное поведение формы
+                const url = isEditMode
+                    ? '@Url.Action("UpdateCustomer", "Customer")' // Редактирование
+                    : '@Url.Action("AddCustomer", "Customer")'; // Добавление
+
+                const formData = $(this).serialize(); // Сериализуем данные формы
+
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: formData,
+                    success: function (result) {
+                        // Обновляем список клиентов
+                        $("#customer-list").html(result);
+
+                        // Закрываем модальное окно
+                        const modal = bootstrap.Modal.getInstance(document.getElementById("addCustomerModal"));
+                        modal.hide();
+
+                        // Очищаем форму
+                        $("#add-customer-form")[0].reset();
+                    },
+                    error: function () {
+                        alert("Произошла ошибка при сохранении клиента.");
+                    }
+                });
+            });
+
+            // Обработка удаления клиента
+            $(document).on("click", ".delete-customer-btn", function () {
+                const customerId = $(this).data("id");
+
+                if (confirm("Вы уверены, что хотите удалить этого клиента?")) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteCustomer", "Customer")',
+                        method: "POST",
+                        data: { id: customerId },
+                        success: function (result) {
+                            // Обновляем список клиентов
+                            $("#customer-list").html(result);
+                        },
+                        error: function () {
+                            alert("Произошла ошибка при удалении клиента.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+

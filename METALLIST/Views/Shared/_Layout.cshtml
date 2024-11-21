@@ -25,13 +25,13 @@
                                 <a class="nav-link" aria-current="page" asp-controller="Home" asp-action="Index">Главная</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Customer" asp-action="AddCustomer">Добавить заказчика</a>
+                                <a class="nav-link" asp-controller="Customer" asp-action="Index">Заказчики</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#tasks">Задачи</a>
+                                <a class="nav-link" asp-controller="Material" asp-action="Index">Материалы</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#calendar">Календарь</a>
+                                <a class="nav-link" asp-controller="Order" asp-action="Index">Заказы</a>
                             </li>
                         </ul>
                         <div class="dropdown">
@@ -39,7 +39,7 @@
                                 @User.Identity.Name
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                <li><a class="dropdown-item" href="#settings">Настройки</a></li>
+                                <li><a class="dropdown-item" asp-controller="Account" asp-action="Options">Настройки</a></li>
                                 <li>
                                     <form method="post" asp-controller="Account" asp-action="Logout" style="display:inline;">
                                         <button type="submit" class="dropdown-item">Выйти</button>
