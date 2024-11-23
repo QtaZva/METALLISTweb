@@ -20,7 +20,7 @@
                     <td>@customer.Requisites</td>
                     <td>@customer.OrganizationName</td>
                     <td>
-                        <button class="btn btn-warning btn-sm edit-customer-btn" data-id="@customer.Id" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Редактировать</button>
+                        <a asp-action="EditCustomer" asp-route-id="@customer.Id" class="btn btn-warning btn-sm">Редактировать</a>
                         <button class="btn btn-danger btn-sm delete-customer-btn" data-id="@customer.Id">Удалить</button>
                     </td>
                 </tr>
@@ -39,7 +39,7 @@
                 <p class="card-text"><strong>Телефон:</strong> @customer.PhoneNumber</p>
                 <p class="card-text"><strong>Реквизиты:</strong> @customer.Requisites</p>
                 <p class="card-text"><strong>Организация:</strong> @customer.OrganizationName</p>
-                <button class="btn btn-warning btn-sm edit-customer-btn" data-id="@customer.Id" data-bs-toggle="modal" data-bs-target="#addCustomerModal">Редактировать</button>
+                <a asp-action="EditCustomer" asp-route-id="@customer.Id" class="btn btn-warning btn-sm">Редактировать</a>
                 <button class="btn btn-danger btn-sm delete-customer-btn" data-id="@customer.Id">Удалить</button>
             </div>
         </div>

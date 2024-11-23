@@ -14,12 +14,6 @@ namespace METALLIST.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddCustomer()
-        {
-            return View();
-        }
-
-        [HttpGet]
         public IActionResult Index()
         {
             // Получаем список клиентов из базы данных
@@ -57,40 +51,35 @@ namespace METALLIST.Controllers
             var customers = _db.Customers.ToList();
             return PartialView("_CustomerListPartial", customers);
         }
-
         [HttpGet]
-        public IActionResult GetCustomer(int id)
+        public IActionResult EditCustomer(int id)
         {
-            var customer = _db.Customers.Where(c => c.Id == id).FirstOrDefault();
-            if (customer == null) return NotFound("Клиент не найден.");
-            return Json(customer);
-        }
-
-        [HttpPost]
-        public IActionResult UpdateCustomer(Customer customer)
-        {
-            if (customer.Id == 0)
+            var customer = _db.Customers.FirstOrDefault(c => c.Id == id);
+            if (customer == null)
             {
-                return BadRequest("ID клиента отсутствует.");
+                return NotFound("Клиент не найден.");
             }
-
-            var existingCustomer = _db.Customers.Where(c => c.Id == customer.Id).FirstOrDefault();
-            if (existingCustomer == null)
+            return View(customer);
+        }
+        [HttpPost]
+        public IActionResult EditCustomer(Customer updatedCustomer)
+        {
+            var customer = _db.Customers.FirstOrDefault(c => c.Id == updatedCustomer.Id);
+            if (customer == null)
             {
                 return NotFound("Клиент не найден.");
             }
 
-            existingCustomer.FullName = customer.FullName;
-            existingCustomer.PhoneNumber = customer.PhoneNumber;
-            existingCustomer.Requisites = customer.Requisites;
-            existingCustomer.OrganizationName = customer.OrganizationName;
+            // Обновляем данные клиента
+            customer.FullName = updatedCustomer.FullName;
+            customer.PhoneNumber = updatedCustomer.PhoneNumber;
+            customer.Requisites = updatedCustomer.Requisites;
+            customer.OrganizationName = updatedCustomer.OrganizationName;
 
             _db.SaveChanges();
 
-            var customers = _db.Customers.ToList();
-            return PartialView("_CustomerListPartial", customers);
+            return RedirectToAction("Index");
         }
-
 
     }
 }

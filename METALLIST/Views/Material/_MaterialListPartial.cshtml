@@ -1,0 +1,44 @@
+﻿@model IEnumerable<METALLIST.Models.Material>
+
+<div class="d-none d-md-block table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Количество</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var material in Model)
+            {
+                <tr>
+                    <td>@material.Name</td>
+                    <td>@material.Description</td>
+                    <td>@material.Quantity</td>
+                    <td>
+                        <a asp-action="EditMaterial" asp-route-id="@material.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                        <button class="btn btn-danger btn-sm delete-material-btn" data-id="@material.Id">Удалить</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Карточки для мобильных устройств -->
+<div class="d-block d-md-none">
+    @foreach (var material in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@material.Name</h5>
+                <p class="card-text"><strong>Описание:</strong> @material.Description</p>
+                <p class="card-text"><strong>Количество:</strong> @material.Quantity</p>
+                <a asp-action="EditMaterial" asp-route-id="@material.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                <button class="btn btn-danger btn-sm delete-material-btn" data-id="@material.Id">Удалить</button>
+            </div>
+        </div>
+    }
+</div>

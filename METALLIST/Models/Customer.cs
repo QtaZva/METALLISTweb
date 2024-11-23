@@ -8,13 +8,13 @@ namespace METALLIST.Models
 
         [Required(ErrorMessage = "Поле 'Полное имя' обязательно.")]
         [StringLength(100, ErrorMessage = "Полное имя должно быть не более 100 символов.")]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         [Required(ErrorMessage = "Поле 'Номер телефона' обязательно.")]
         [Phone(ErrorMessage = "Некорректный номер телефона.")]
-        public string PhoneNumber { get; set; }
-        public string Requisites { get; set; }
-        public string OrganizationName { get; set; }
-        public ICollection<Order> Orders { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Requisites { get; set; }
+        public string? OrganizationName { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

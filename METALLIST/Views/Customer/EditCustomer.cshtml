@@ -1,0 +1,36 @@
+﻿@model METALLIST.Models.Customer
+
+@{
+    ViewData["Title"] = "Изменить данные заказчика";
+}
+
+<h1>Изменить данные заказчика</h1>
+
+<h4>Заказчик</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditCustomer" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label class="form-label">Полное имя</label>
+                <input type="text" asp-for="FullName" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Телефон</label>
+                <input type="text" asp-for="PhoneNumber" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Реквизиты</label>
+                <input type="text" asp-for="Requisites" class="form-control"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Название организации</label>
+                <input type="text" asp-for="OrganizationName" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+    </div>
+</div>
+
+
