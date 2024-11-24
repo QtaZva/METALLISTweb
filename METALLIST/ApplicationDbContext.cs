@@ -9,20 +9,24 @@ namespace METALLIST
         public DbSet<Order> Orders { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<OrderMaterial> OrderMaterials { get; set; }
         public DbSet<User> Users { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Настройка связи "Один ко многим" между Order и Customer
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId);
+            base.OnModelCreating(modelBuilder);
 
-            // Настройка связи "Один ко многим" между Order и Material
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Material)
-                .WithMany(m => m.Orders)
-                .HasForeignKey(o => o.MaterialsId);
+            modelBuilder.Entity<OrderMaterial>()
+                .HasKey(om => new { om.OrderId, om.MaterialId }); // Композитный ключ
+
+            modelBuilder.Entity<OrderMaterial>()
+                .HasOne(om => om.Order)
+                .WithMany(o => o.OrderMaterials)
+                .HasForeignKey(om => om.OrderId);
+
+            modelBuilder.Entity<OrderMaterial>()
+                .HasOne(om => om.Material)
+                .WithMany(m => m.OrderMaterials)
+                .HasForeignKey(om => om.MaterialId);
         }
     }
 }

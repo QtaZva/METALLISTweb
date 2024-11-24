@@ -1,0 +1,47 @@
+﻿@model IEnumerable<METALLIST.Models.Order>
+
+<div class="d-none d-md-block table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Описание</th>
+                <th>Цена</th>
+                <th>Клиент</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Name</td>
+                    <td>@order.Description</td>
+                    <td>@order.Price.ToString("C")</td>
+                    <td>@order.Customer?.FullName</td>
+                    <td>
+                        <a asp-action="EditOrder" asp-route-id="@order.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                        <button class="btn btn-danger btn-sm delete-order-btn" data-id="@order.Id">Удалить</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Карточки для мобильных устройств -->
+<div class="d-block d-md-none">
+    @foreach (var order in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@order.Name</h5>
+                <p class="card-text"><strong>Описание:</strong> @order.Description</p>
+                <p class="card-text"><strong>Цена:</strong> @order.Price.ToString("C")</p>
+                <p class="card-text"><strong>Клиент:</strong> @order.Customer?.FullName</p>
+                <a asp-action="EditOrder" asp-route-id="@order.Id" class="btn btn-warning btn-sm">Редактировать</a>
+                <button class="btn btn-danger btn-sm delete-order-btn" data-id="@order.Id">Удалить</button>
+            </div>
+        </div>
+    }
+</div>

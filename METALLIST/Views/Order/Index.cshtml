@@ -1,0 +1,139 @@
+﻿@model IEnumerable<METALLIST.Models.Order>
+
+@{
+    ViewData["Title"] = "Список заказов";
+}
+
+<div class="container mt-4">
+    <h2>Список заказов</h2>
+
+    <!-- Кнопка для отображения формы -->
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOrderModal">
+        Добавить заказ
+    </button>
+    <!-- Таблица заказов -->
+    <div id="order-list">
+        @Html.Partial("_OrderListPartial", Model)
+    </div>
+    @if (!Model.Any())
+    {
+        <p>Заказов нет.</p>
+    }
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addOrderModalLabel">Добавить заказ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма добавления нового заказа -->
+                <form id="add-order-form">
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">Название заказа</label>
+                        <input type="text" id="Name" name="Name" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="Description" class="form-label">Описание</label>
+                        <textarea id="Description" name="Description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Price" class="form-label">Цена</label>
+                        <input type="number" id="Price" name="Price" class="form-control" step="0.01" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="CustomerId" class="form-label">Клиент</label>
+                        <select id="CustomerId" name="CustomerId" class="form-select" required>
+                            <option value="">Выберите клиента</option>
+                            @foreach (var customer in ViewBag.Customers)
+                            {
+                                <option value="@customer.Id">@customer.FullName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <h5>Материалы</h5>
+                    <div id="materials-container">
+                        <div class="row g-3 align-items-end material-item">
+                            <div class="col-md-8">
+                                <label for="MaterialId_0" class="form-label">Материал</label>
+                                <select id="MaterialId_0" name="OrderMaterials[0].MaterialId" class="form-select" required>
+                                    <option value="">Выберите материал</option>
+                                    @foreach (var material in ViewBag.Materials)
+                                    {
+                                        <option value="@material.Id">@material.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="Quantity_0" class="form-label">Количество</label>
+                                <input type="number" id="Quantity_0" name="OrderMaterials[0].Quantity" class="form-control" min="1" required />
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger remove-material-btn">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="add-material-btn" class="btn btn-secondary mt-3">Добавить материал</button>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let materialIndex = 1;
+
+            $("#add-material-btn").click(function () {
+                const newMaterialHtml = `
+                    <div class="row g-3 align-items-end material-item">
+                        <div class="col-md-8">
+                            <label for="MaterialId_${materialIndex}" class="form-label">Материал</label>
+                            <select id="MaterialId_${materialIndex}" name="OrderMaterials[${materialIndex}].MaterialId" class="form-select" required>
+                                <option value="">Выберите материал</option>
+                                    @foreach (var material in ViewBag.Materials)
+                                    {
+                                        <option value="@material.Id">@material.Name</option>
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="Quantity_${materialIndex}" class="form-label">Количество</label>
+                            <input type="number" id="Quantity_${materialIndex}" name="OrderMaterials[${materialIndex}].Quantity" class="form-control" min="1" required />
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-danger remove-material-btn">Удалить</button>
+                        </div>
+                    </div>`;
+                $("#materials-container").append(newMaterialHtml);
+                materialIndex++;
+            });
+
+            $(document).on("click", ".remove-material-btn", function () {
+                $(this).closest(".material-item").remove();
+            });
+
+            $("#add-order-form").submit(function (e) {
+                e.preventDefault();
+                const url = '@Url.Action("CreateOrder", "Order")';
+                const formData = $(this).serialize();
+                $.post(url, formData, function (response) {
+                    $("#order-list").html(response);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("addOrderModal"));
+                    modal.hide();
+                }).fail(function () {
+                    alert("Ошибка при добавлении заказа.");
+                });
+            });
+        });
+    </script>
+}
