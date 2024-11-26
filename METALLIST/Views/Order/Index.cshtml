@@ -1,4 +1,4 @@
-﻿@model IEnumerable<METALLIST.Models.Order>
+﻿ @model IEnumerable<METALLIST.Models.Order>
 
 @{
     ViewData["Title"] = "Список заказов";
@@ -42,7 +42,15 @@
                     </div>
                     <div class="mb-3">
                         <label for="Price" class="form-label">Цена</label>
-                        <input type="number" id="Price" name="Price" class="form-control" step="0.01" required />
+                        <input type="number" id="Price" name="Price" class="form-control" step="0.01"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Difficulty" class="form-label">Сложность работы</label>
+                        <input type="text" id="Difficulty" name="Difficulty" class="form-control"/>
+                    </div>
+                    <div class="mb-3">
+                        <label for="TypeOfPaint" class="form-label">Тип покраски</label>
+                        <input type="text" id="TypeOfPaint" name="TypeOfPaint" class="form-control"/>
                     </div>
                     <div class="mb-3">
                         <label for="CustomerId" class="form-label">Клиент</label>
@@ -55,12 +63,12 @@
                         </select>
                     </div>
 
-                    <h5>Материалы</h5>
+                    @* <h5>Материалы</h5>
                     <div id="materials-container">
                         <div class="row g-3 align-items-end material-item">
                             <div class="col-md-8">
                                 <label for="MaterialId_0" class="form-label">Материал</label>
-                                <select id="MaterialId_0" name="OrderMaterials[0].MaterialId" class="form-select" required>
+                                <select id="MaterialId_0" name="OrderMaterials[0].MaterialId" class="form-select">
                                     <option value="">Выберите материал</option>
                                     @foreach (var material in ViewBag.Materials)
                                     {
@@ -70,14 +78,14 @@
                             </div>
                             <div class="col-md-3">
                                 <label for="Quantity_0" class="form-label">Количество</label>
-                                <input type="number" id="Quantity_0" name="OrderMaterials[0].Quantity" class="form-control" min="1" required />
+                                <input type="number" id="Quantity_0" name="OrderMaterials[0].Quantity" class="form-control" min="1"/>
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-danger remove-material-btn">Удалить</button>
                             </div>
                         </div>
                     </div>
-                    <button type="button" id="add-material-btn" class="btn btn-secondary mt-3">Добавить материал</button>
+                    <button type="button" id="add-material-btn" class="btn btn-secondary mt-3">Добавить материал</button> *@
 
                     <div class="mt-4">
                         <button type="submit" class="btn btn-success">Сохранить</button>
@@ -126,13 +134,40 @@
                 e.preventDefault();
                 const url = '@Url.Action("CreateOrder", "Order")';
                 const formData = $(this).serialize();
-                $.post(url, formData, function (response) {
-                    $("#order-list").html(response);
-                    const modal = bootstrap.Modal.getInstance(document.getElementById("addOrderModal"));
-                    modal.hide();
-                }).fail(function () {
-                    alert("Ошибка при добавлении заказа.");
+
+                $.ajax({
+                    url: url,
+                    method: "POST",
+                    data: formData,
+                    success: function (response) {
+                        $("#order-list").html(response);
+
+                        const modal = bootstrap.Modal.getInstance(document.getElementById("addOrderModal"));
+                        modal.hide();
+
+                        $("#add-order-form")[0].reset();
+                    },
+                    error: function () {
+                        alert("Ошибка при добавлении заказа.");
+                    }
                 });
+            });
+            $(document).on("click", ".delete-order-btn", function () {
+                const orderId = $(this).data("id");
+
+                if (confirm("Вы уверены, что хотите удалить этот заказ?")) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteOrder", "Order")',
+                        method: "POST",
+                        data: { id: orderId },
+                        success: function (result) {
+                            $("#order-list").html(result);
+                        },
+                        error: function () {
+                            alert("Произошла ошибка при удалении заказа.");
+                        }
+                    });
+                }
             });
         });
     </script>

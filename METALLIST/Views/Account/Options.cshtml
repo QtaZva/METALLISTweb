@@ -1,0 +1,20 @@
+﻿@model METALLIST.Models.User
+@{
+    ViewData["Title"] = "Настройки";
+}
+
+
+<h4>Заказчик</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Options" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label class="form-label">ФИО</label>
+                <input type="text" asp-for="Name" class="form-control" required />
+            </div>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+    </div>
+</div>

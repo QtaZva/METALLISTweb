@@ -1,9 +1,11 @@
 ﻿using METALLIST.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace METALLIST.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -32,7 +34,7 @@ namespace METALLIST.Controllers
 
         // Добавление нового заказа
         [HttpPost]
-        public IActionResult CreateOrder(Order order, List<OrderMaterial> orderMaterials)
+        public IActionResult CreateOrder(Order order/*, List<OrderMaterial> orderMaterials*/)
         {
             try
             {
@@ -41,7 +43,7 @@ namespace METALLIST.Controllers
                 _db.SaveChanges();
 
                 // Добавляем материалы к заказу
-                if (orderMaterials != null && orderMaterials.Any())
+                /*if (orderMaterials != null && orderMaterials.Any())
                 {
                     foreach (var orderMaterial in orderMaterials)
                     {
@@ -49,7 +51,7 @@ namespace METALLIST.Controllers
                         _db.OrderMaterials.Add(orderMaterial);
                     }
                     _db.SaveChanges();
-                }
+                }*/
 
                 // Возвращаем обновленный список заказов
                 var orders = _db.Orders

@@ -1,9 +1,11 @@
 ﻿using METALLIST.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace METALLIST.Controllers
 {
+    [Authorize]
     public class MaterialController : Controller
     {
         private ApplicationDbContext _db;

@@ -15,7 +15,8 @@
                     <label for="password" class="form-label">Пароль:</label>
                     <input type="password" class="form-control" id="password" name="password" required placeholder="Введите ваш пароль" />
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Войти</button>
+                <button type="submit" class="btn btn-primary w-100 mb-3">Войти</button>
+                <a asp-action="Register" asp-controller="Account" class="btn btn-primary w-100">Регистрация</a>
             </form>
 
             @if (ViewBag.Error != null)
