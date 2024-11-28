@@ -1,0 +1,46 @@
+﻿@model METALLIST.Models.Order
+@{
+    ViewData["Title"] = "Изменить данные заказа";
+}
+<h1>Изменить данные заказа</h1>
+
+<h4>Заказ</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditOrder" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label class="form-label">Название заказа</label>
+                <input type="text" asp-for="Name" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Описание</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Цена</label>
+                <input type="number" asp-for="Price" class="form-control" step="0.01" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Сложность работы</label>
+                <input type="text" asp-for="Difficulty" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Тип покраски</label>
+                <input type="text" asp-for="TypeOfPaint" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Клиент</label>
+                <select asp-for="CustomerId" lass="form-select" required>
+                    <option value="">Выберите клиента</option>
+                    @foreach (var customer in ViewBag.Customers)
+                    {
+                        <option value="@customer.Id">@customer.FullName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Сохранить</button>
+        </form>
+    </div>
+</div>

@@ -11,6 +11,9 @@
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
         Добавить клиента
     </button>
+    <div class="mb-3">
+        <input type="text" id="customerSearch" class="form-control" placeholder="Введите ФИО для поиска" />
+    </div>
     <!-- Таблица клиентов -->
     <div id="customer-list">
         @Html.Partial("_CustomerListPartial", Model)
@@ -60,6 +63,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            $(document).on("click", ".pagination a", function (e) {
+                e.preventDefault();
+                const url = $(this).attr("href");
+                const searchString = $("#customerSearch").val(); // Текущая строка поиска
+
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#customer-list").html(data);
+                });
+            });
+
+            $("#customerSearch").on("input", function () {
+                const searchString = $(this).val();
+                const url = '@Url.Action("Search", "Customer")';
+
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#customer-list").html(data);
+                });
+            });
             // Обработка кнопки "Добавить клиента"
             $("#add-customer-btn").click(function () {
                 $("#addCustomerModalLabel").text("Добавить клиента");

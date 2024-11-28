@@ -1,4 +1,4 @@
-﻿ @model IEnumerable<METALLIST.Models.Order>
+﻿@model IEnumerable<METALLIST.Models.Order>
 
 @{
     ViewData["Title"] = "Список заказов";
@@ -11,6 +11,9 @@
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addOrderModal">
         Добавить заказ
     </button>
+    <div class="mb-3">
+        <input type="text" id="orderSearch" class="form-control" placeholder="Введите название заказа для поиска" />
+    </div>
     <!-- Таблица заказов -->
     <div id="order-list">
         @Html.Partial("_OrderListPartial", Model)
@@ -99,8 +102,26 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            let materialIndex = 1;
+            $(document).on("click", ".pagination a", function (e) {
+                e.preventDefault();
+                const url = $(this).attr("href");
+                const searchString = $("#orderSearch").val(); // Текущая строка поиска
 
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#order-list").html(data);
+                });
+            });
+
+            $("#orderSearch").on("input", function () {
+                const searchString = $(this).val();
+                const url = '@Url.Action("Search", "Order")';
+
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#order-list").html(data);
+                });
+            });
+
+            let materialIndex = 1;
             $("#add-material-btn").click(function () {
                 const newMaterialHtml = `
                     <div class="row g-3 align-items-end material-item">
@@ -140,18 +161,17 @@
                     method: "POST",
                     data: formData,
                     success: function (response) {
-                        $("#order-list").html(response);
-
+                        $("#order-list").html(response); // Обновляем только таблицу
                         const modal = bootstrap.Modal.getInstance(document.getElementById("addOrderModal"));
-                        modal.hide();
-
-                        $("#add-order-form")[0].reset();
+                        modal.hide(); // Закрываем модальное окно
+                        $("#add-order-form")[0].reset(); // Сбрасываем форму
                     },
                     error: function () {
                         alert("Ошибка при добавлении заказа.");
                     }
                 });
             });
+
             $(document).on("click", ".delete-order-btn", function () {
                 const orderId = $(this).data("id");
 

@@ -10,7 +10,9 @@
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
         Добавить материал
     </button>
-
+    <div class="mb-3">
+        <input type="text" id="materialSearch" class="form-control" placeholder="Введите название материала для поиска" />
+    </div>
     <div id="material-list">
         @Html.Partial("_MaterialListPartial", Model)
     </div>
@@ -54,6 +56,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            $(document).on("click", ".pagination a", function (e) {
+                e.preventDefault();
+                const url = $(this).attr("href");
+                const searchString = $("#materialSearch").val(); // Текущая строка поиска
+
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#material-list").html(data);
+                });
+            });
+
+            $("#materialSearch").on("input", function () {
+                const searchString = $(this).val();
+                const url = '@Url.Action("Search", "Material")';
+
+                $.get(url, { searchString: searchString }, function (data) {
+                    $("#material-list").html(data);
+                });
+            });
             // Обработка кнопки "Добавить материал"
             $("#add-material-form").submit(function (e) {
                 e.preventDefault(); // Отменяем стандартное поведение формы

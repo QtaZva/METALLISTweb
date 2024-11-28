@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList.Extensions;
 
 namespace METALLIST.Controllers
 {
@@ -18,54 +19,64 @@ namespace METALLIST.Controllers
 
         // Отображение списка заказов
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int? page, string searchString, bool isPartial = false)
         {
-            // Получаем список заказов с клиентами
-            var orders = _db.Orders
-                .Include(o => o.Customer) // Подгружаем связанных клиентов
-                .ToList();
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
 
-            // Передаем список клиентов в ViewBag для выпадающего списка, если он используется
+            var orders = _db.Orders
+                .Include(o => o.Customer)
+                .Where(o => string.IsNullOrEmpty(searchString) || o.Name.Contains(searchString))
+                .OrderBy(o => o.Name)
+                .ToPagedList(pageNumber, pageSize);
+
+            if (isPartial)
+            {
+                ViewData["searchString"] = searchString;
+                return PartialView("_OrderListPartial", orders);
+            }
+
             ViewBag.Customers = _db.Customers.ToList();
             ViewBag.Materials = _db.Materials.ToList();
+            ViewData["searchString"] = searchString;
 
             return View(orders);
         }
 
+        public IActionResult Search(string searchString, int? page)
+        {
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var orders = _db.Orders
+                .Include(o => o.Customer)
+                .Where(o => string.IsNullOrEmpty(searchString) || o.Name.Contains(searchString))
+                .OrderBy(o => o.Name)
+                .ToPagedList(pageNumber, pageSize);
+
+            ViewData["searchString"] = searchString; // Передача строки поиска
+
+            return PartialView("_OrderListPartial", orders);
+        }
+
         // Добавление нового заказа
         [HttpPost]
-        public IActionResult CreateOrder(Order order/*, List<OrderMaterial> orderMaterials*/)
+        public IActionResult CreateOrder(Order order)
         {
-            try
-            {
-                // Добавляем заказ
-                _db.Orders.Add(order);
-                _db.SaveChanges();
+            // Добавляем заказ
+            _db.Orders.Add(order);
+            _db.SaveChanges();
 
-                // Добавляем материалы к заказу
-                /*if (orderMaterials != null && orderMaterials.Any())
-                {
-                    foreach (var orderMaterial in orderMaterials)
-                    {
-                        orderMaterial.OrderId = order.Id;
-                        _db.OrderMaterials.Add(orderMaterial);
-                    }
-                    _db.SaveChanges();
-                }*/
+            // Получаем обновленный список заказов с учётом пагинации
+            int pageSize = 10;
+            int pageNumber = 1; // Возвращаем первую страницу после добавления
 
-                // Возвращаем обновленный список заказов
-                var orders = _db.Orders
-                    .Include(o => o.Customer)
-                    .ToList();
+            var orders = _db.Orders
+                .Include(o => o.Customer)
+                .OrderBy(o => o.Name)
+                .ToPagedList(pageNumber, pageSize);
 
-                return PartialView("_OrderListPartial", orders);
-            }
-            catch (Exception ex)
-            {
-                // Логируем ошибку
-                Console.WriteLine($"Ошибка при добавлении заказа: {ex.Message}");
-                return StatusCode(500, "Произошла ошибка при добавлении заказа.");
-            }
+            return PartialView("_OrderListPartial", orders);
         }
 
         // Удаление заказа
@@ -87,10 +98,14 @@ namespace METALLIST.Controllers
             _db.Orders.Remove(order);
             _db.SaveChanges();
 
-            // Возвращаем обновленный список заказов
+            int pageSize = 10;
+            int pageNumber = 1; // Первая страница после удаления
+
             var orders = _db.Orders
                 .Include(o => o.Customer)
-                .ToList();
+                .OrderBy(o => o.Name)
+                .ToPagedList(pageNumber, pageSize);
+
             return PartialView("_OrderListPartial", orders);
         }
 
@@ -131,7 +146,7 @@ namespace METALLIST.Controllers
             order.CustomerId = updatedOrder.CustomerId;
 
             // Обновляем связанные материалы
-            _db.OrderMaterials.RemoveRange(order.OrderMaterials); // Удаляем старые связи
+            /*_db.OrderMaterials.RemoveRange(order.OrderMaterials); // Удаляем старые связи
             if (orderMaterials != null && orderMaterials.Any())
             {
                 foreach (var material in orderMaterials)
@@ -139,7 +154,7 @@ namespace METALLIST.Controllers
                     material.OrderId = order.Id;
                     _db.OrderMaterials.Add(material);
                 }
-            }
+            }*/
 
             _db.SaveChanges();
 

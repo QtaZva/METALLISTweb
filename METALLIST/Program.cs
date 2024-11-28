@@ -1,3 +1,4 @@
+using METALLIST.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ namespace METALLIST
 
                 options.SlidingExpiration = true; // ¬ключить продление куки
             });
+            //builder.Services.AddScoped<OrderMaterialService>();
             builder.Services.AddAuthorization();
 
             // Add services to the container.

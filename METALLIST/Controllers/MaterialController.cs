@@ -1,7 +1,8 @@
 ﻿using METALLIST.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using X.PagedList.Extensions;
 
 namespace METALLIST.Controllers
 {
@@ -14,10 +15,40 @@ namespace METALLIST.Controllers
             _db = db;
         }
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Index(int? page, string searchString, bool isPartial = false)
         {
-            var materials = _db.Materials.ToList();
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var materials = _db.Materials
+                .ToList()
+                .Where(m => string.IsNullOrEmpty(searchString) || m.Name.Contains(searchString))
+                .OrderBy(m => m.Name)
+                .ToPagedList(pageNumber, pageSize);
+
+            if (isPartial)
+            {
+                ViewData["searchString"] = searchString;
+                return PartialView("_MaterialListPartial", materials);
+            }
+
+            ViewData["searchString"] = searchString;
+
             return View(materials);
+        }
+        public IActionResult Search(string searchString, int? page)
+        {
+            int pageSize = 10;
+            int pageNumber = page ?? 1;
+
+            var materials = _db.Materials
+                .Where(m => string.IsNullOrEmpty(searchString) || m.Name.Contains(searchString))
+                .OrderBy(m => m.Name)
+                .ToPagedList(pageNumber, pageSize);
+
+            ViewData["searchString"] = searchString; // Передача строки поиска
+
+            return PartialView("_MaterialListPartial", materials);
         }
 
         [HttpPost]
@@ -26,8 +57,12 @@ namespace METALLIST.Controllers
             _db.Materials.Add(material);
             _db.SaveChanges();
 
+            int pageSize = 10;
+            int pageNumber = 1; 
             // Возвращаем обновленный список клиентов
-            var materials = _db.Materials.ToList();
+            var materials = _db.Materials
+                .OrderBy(m => m.Name)
+                .ToPagedList(pageNumber, pageSize);
             return PartialView("_MaterialListPartial", materials);
 
         }
@@ -40,12 +75,20 @@ namespace METALLIST.Controllers
             {
                 return NotFound("Материал не найден.");
             }
+            var materialsForOrder = _db.OrderMaterials.Where(m => m.MaterialId == id).ToList();
+            _db.OrderMaterials.RemoveRange(materialsForOrder);
 
             _db.Materials.Remove(material);
             _db.SaveChanges();
 
+            int pageSize = 10;
+            int pageNumber = 1; // Первая страница после удаления
+
             // Возвращаем обновленный список клиентов
-            var materials = _db.Materials.ToList();
+            var materials = _db.Materials
+                .OrderBy(o => o.Name)
+                .ToPagedList(pageNumber, pageSize);
+
             return PartialView("_MaterialListPartial", materials);
         }
         [HttpGet]
