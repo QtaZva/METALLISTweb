@@ -1,6 +1,7 @@
 using METALLIST.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace METALLIST.Controllers
@@ -8,22 +9,43 @@ namespace METALLIST.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            var customers = await _context.Customers
+                .Take(3)
+                .ToListAsync();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var materials = await _context.Materials
+                .Take(3)
+                .ToListAsync();
+
+            var orders = await _context.Orders
+                .Take(3)
+                .ToListAsync();
+
+            var model = new HomeViewModel
+            {
+                Customers = customers,
+                Materials = materials,
+                Orders = orders
+            };
+
+            return View(model);
         }
     }
+
+    public class HomeViewModel
+    {
+        public List<Customer> Customers { get; set; }
+        public List<Material> Materials { get; set; }
+        public List<Order> Orders { get; set; }
+    }
 }
+

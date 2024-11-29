@@ -1,0 +1,49 @@
+﻿@model IEnumerable<METALLIST.Models.OrderMaterial>
+@{
+    ViewData["Title"] = "Материалы у заказа";
+}
+<h1>Материалы</h1>
+
+<!-- Таблица для больших экранов -->
+<div class="d-none d-md-block table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Материалы</th>
+                <th>Количество</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Material.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>
+                        <a class="btn btn-danger btn-sm view-materials-btn" asp-action="DeleteMaterialFromOrder" asp-route-orderId="@item.OrderId" asp-route-materialId="@item.MaterialId">
+                            Удалить
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Карточки для маленьких экранов -->
+<div class="d-md-none">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@item.Material.Name</h5>
+                <p class="card-text">Количество: @item.Quantity</p>
+                <a class="btn btn-danger btn-sm" asp-action="DeleteMaterialFromOrder" asp-route-orderId="@item.OrderId" asp-route-materialId="@item.MaterialId">
+                    Удалить
+                </a>
+            </div>
+        </div>
+    }
+</div>
+

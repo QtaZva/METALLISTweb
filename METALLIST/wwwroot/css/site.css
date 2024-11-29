@@ -1,9 +1,12 @@
+/* Подключаем шрифт Roboto */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 /* Основные стили */
 body {
     background-color: #f8f9fa;
     color: #212529;
     padding-top: 56px;
-    font-family: Constantia;
+    font-family: 'Roboto', sans-serif;
 }
 
 /* Навигация */
@@ -38,3 +41,58 @@ footer {
 main {
     padding-top: 20px;
 }
+/* Плавающая кнопка калькулятора */
+.floating-calculator-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1050; /* выше всех элементов */
+}
+
+    /* Для иконки калькулятора */
+    .floating-calculator-btn i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+/* Скрыть плавающую кнопку на больших экранах */
+@media (min-width: 768px) {
+    .floating-calculator-btn {
+        display: none;
+    }
+}
+
+/* Скрыть кнопку в navbar на мобильных устройствах */
+@media (max-width: 767px) {
+    .btn-light.d-md-inline {
+        display: none;
+    }
+}
+/* Увеличить отступы между карточками */
+.card {
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Отступы для карточек на маленьких экранах */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .card-text {
+        font-size: 1rem;
+    }
+}
+

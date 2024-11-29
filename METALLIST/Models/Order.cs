@@ -9,6 +9,7 @@
         public string? TypeOfPaint { get; set; }
         public string? Difficulty {  get; set; }
         public int CustomerId {  get; set; }
+        public string? OrderDate { get; set; }
         public Customer? Customer { get; set; }
         public ICollection<OrderMaterial>? OrderMaterials { get; set; }
     }
