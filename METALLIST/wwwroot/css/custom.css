@@ -1,0 +1,39 @@
+﻿.bs-primary {
+    background-color: #034d0e;
+}
+.btn-primary {
+    background-color: #034d0e !important;
+    border-color: #034d0e !important;
+}
+/* Обычная кнопка пагинации */
+.pagination .page-link {
+    background-color: #f8f9fa; /* Светлый фон */
+    color: #343a40; /* Тёмный текст */
+    border: 1px solid #6c757d; /* Серый бордер */
+}
+
+    .pagination .page-link:hover {
+        background-color: #6c757d; /* Серый фон при наведении */
+        color: #ffffff; /* Белый текст при наведении */
+    }
+
+/* Активная кнопка пагинации */
+.pagination .active .page-link {
+    background-color: #034d0e; /* Зелёный фон */
+    color: #ffffff; /* Белый текст */
+    border-color: #034d0e; /* Зелёный бордер */
+}
+
+/* Отключённые кнопки (если есть) */
+.pagination .disabled .page-link {
+    background-color: #e9ecef; /* Светло-серый фон */
+    color: #6c757d; /* Серый текст */
+    border-color: #dee2e6; /* Серый бордер */
+}
+.btn-outline-primary {
+    color: #034d0e;
+    border-color: #034d0e;
+}
+    .btn-outline-primary:hover {
+        background-color: #034d0e;
+    }

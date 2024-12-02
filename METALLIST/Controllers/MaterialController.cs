@@ -1,7 +1,6 @@
 ﻿using METALLIST.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using X.PagedList.Extensions;
 
 namespace METALLIST.Controllers
@@ -46,7 +45,7 @@ namespace METALLIST.Controllers
                 .OrderBy(m => m.Name)
                 .ToPagedList(pageNumber, pageSize);
 
-            ViewData["searchString"] = searchString; // Передача строки поиска
+            ViewData["searchString"] = searchString;
 
             return PartialView("_MaterialListPartial", materials);
         }
@@ -59,7 +58,7 @@ namespace METALLIST.Controllers
 
             int pageSize = 10;
             int pageNumber = 1; 
-            // Возвращаем обновленный список клиентов
+
             var materials = _db.Materials
                 .OrderBy(m => m.Name)
                 .ToPagedList(pageNumber, pageSize);
@@ -82,9 +81,8 @@ namespace METALLIST.Controllers
             _db.SaveChanges();
 
             int pageSize = 10;
-            int pageNumber = 1; // Первая страница после удаления
+            int pageNumber = 1; 
 
-            // Возвращаем обновленный список клиентов
             var materials = _db.Materials
                 .OrderBy(o => o.Name)
                 .ToPagedList(pageNumber, pageSize);

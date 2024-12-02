@@ -12,7 +12,6 @@ namespace METALLIST.Controllers
         private readonly ApplicationDbContext _db;
         private readonly PasswordHasher<User> _passwordHasher;
 
-        // Внедрение ApplicationDbContext через конструктор
         public AccountController(ApplicationDbContext db)
         {
             _db = db;
@@ -32,7 +31,6 @@ namespace METALLIST.Controllers
 
             if (user != null)
             {
-                // Проверяем введённый пароль с хешем в базе
                 var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
 
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
@@ -40,7 +38,7 @@ namespace METALLIST.Controllers
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.Name), // Используем имя пользователя из базы
+                        new Claim(ClaimTypes.Name, user.Name),
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -88,8 +86,7 @@ namespace METALLIST.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Name), // Используем имя пользователя из базы
-                    /*new Claim(ClaimTypes.Role, "Admin") // Пример роли*/
+                    new Claim(ClaimTypes.Name, user.Name),
                 };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
